@@ -1,0 +1,15 @@
+{
+  "appId": "com.vehicle.manager",
+  "appName": "车辆数据管理助手",
+  "webDir": "dist",
+  "server": {
+    "androidScheme": "https",
+    "cleartext": true
+  },
+  "plugins": {
+    "SplashScreen": {
+      "launchShowDuration": 2000,
+      "backgroundColor": "#1e40af"
+    }
+  }
+}

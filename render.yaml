@@ -1,0 +1,40 @@
+# Render 云部署配置文件
+# 使用方法：
+# 1. 将代码推送到你的 GitHub 仓库
+# 2. 登录 https://dashboard.render.com
+# 3. 点击 "New +" → "Blueprint"
+# 4. 连接你的 GitHub 仓库，Render 会自动识别此文件并部署
+
+services:
+  # 后端 Web 服务
+  - type: web
+    name: vehicle-manager
+    env: node
+    region: singapore  # 新加坡节点，亚洲访问较快
+    plan: free
+    buildCommand: cd backend && npm install
+    startCommand: cd backend && node src/index.js
+    healthCheckPath: /api/health
+    envVars:
+      # 数据库连接（由下方 PostgreSQL 服务自动提供）
+      - key: DATABASE_URL
+        fromDatabase:
+          name: vehicle-manager-db
+          property: connectionString
+      # JWT 密钥（自动生成随机值）
+      - key: JWT_SECRET
+        generateValue: true
+      # 前端地址（后端同时也提供前端静态文件服务）
+      - key: FRONTEND_URL
+        value: https://vehicle-manager.onrender.com
+      # 指定 Node.js 版本
+      - key: NODE_VERSION
+        value: 18
+
+databases:
+  # PostgreSQL 数据库服务（免费层，1GB 存储）
+  - name: vehicle-manager-db
+    databaseName: vehicle_manager
+    region: singapore
+    plan: free
+    ipAllowList: []  # 仅允许 Render 内部服务访问
